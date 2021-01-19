@@ -3,14 +3,23 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/foundation-sites@6.6.3/dist/css/foundation.min.css"
+      integrity="sha256-ogmFxjqiTMnZhxCqVmcqTvjfe1Y/ec4WaRj/aQPvn+I=" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/foundation-sites@6.6.3/dist/js/foundation.min.js"
+      integrity="sha256-pRF3zifJRA9jXGv++b06qwtSqX1byFQOLjqa2PTEb2o=" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="style.css" />
     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
     <title>Covid Tracker</title>
   </head>
   <body>
-    <div class="select-container" id="select-container"></div>
-    <button onclick="refresh()" id="button">Refresh</button>
-    <div id="graph"></div>
+    <div class="container">
+      <h1>Covid State Dashboard</h1>
+      <div class="graph-options">
+      <div class="select-container" id="select-container"></div>
+      <button type="button" class="button" onclick="refresh()" id="button">Refresh</button>
+      </div>
+      <div id="graph"></div>
+    </div>
     <script src="script.js"></script>
   </body>
 </html>

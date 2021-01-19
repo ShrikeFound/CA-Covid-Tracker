@@ -1,5 +1,22 @@
-body {
-  background-color: black;
-  height: 100%;
-  width: 100%;
+.graph-options {
+  width: max-content;
+  margin: 1rem auto 2rem;
+  display: flex;
+}
+.graph-options select {
+  margin-right: 0.5em;
+}
+
+.select-container {
+  display: flex;
+}
+.container {
+  width: 90%;
+  max-width: 1150px;
+  margin: 0 auto;
+}
+
+h1 {
+  text-align: center;
+  margin-top: 3rem;
 }

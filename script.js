@@ -213,10 +213,13 @@ parent.appendChild(selectList);
 
 for (let i = 0; i < array.length; i++) {
   let option = document.createElement("option");
-  option.text = array[i][0];
+  countryName = array[i][0];
+  option.text = countryName.charAt(0) + countryName.slice(1).toLowerCase();
   option.value = array[i][1];
   selectList.appendChild(option);
 }
+
+selectList.selectedIndex = "5";
 
 let graphTypeSelect = document.createElement("select");
 graphTypeSelect.id = "graphSelect";
