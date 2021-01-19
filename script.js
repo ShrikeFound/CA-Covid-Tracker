@@ -160,7 +160,8 @@ const cleanData = (rawData) => {
   };
 };
 
-const plotData = (data, country, graphType,daily) => {
+const plotData = (data, country, graphType, daily) => {
+  showLegend = screen.width > 600
   const dailyDeathsPlot = {
     x: data["dates"],
     y: data["deathsDaily"],
@@ -178,7 +179,7 @@ const plotData = (data, country, graphType,daily) => {
     },
     name: "Moving Average (7 Days)",
     type: "line",
-    showlegend: true
+    showlegend: showLegend
   };
 
   const dailyCasesPlot = {
@@ -198,9 +199,9 @@ const plotData = (data, country, graphType,daily) => {
     },
     name: "Moving Average (7 Days)",
     type: "line",
-    showlegend: true
+    showlegend: showLegend
   };
-
+  console.log(averageCasesPlot)
   let deathGraphData;
   let caseGraphData;
 
@@ -217,9 +218,10 @@ const plotData = (data, country, graphType,daily) => {
     deaths: deathGraphData,
   };
   const title = graphType.charAt(0).toUpperCase() + graphType.slice(1);
-
+  console.log(screen.width > 600);
   layout = {
     title: `COVID ${title} in ${country}`,
+    showlegend: showLegend,
     xaxis: {
       autorange: true,
       rangeselector: {
@@ -246,7 +248,6 @@ const plotData = (data, country, graphType,daily) => {
   Plotly.newPlot(graph, graphData[graphType], layout, {
     displayModeBar: false,
     responsive: true,
-    showlegend: true
   });
 };
 
