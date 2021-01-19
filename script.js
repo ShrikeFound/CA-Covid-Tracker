@@ -108,6 +108,8 @@ const cleanData = (rawData) => {
   const casesDaily = new Array();
   const casesTotal = new Array();
   const casesAverage = new Array();
+  let trueDeathTotal = 0;
+  let trueCaseTotal = 0;
   //going through each line of data
   for (let i = 0; i < rawData.length; i++) {
     const data = rawData[i];
@@ -139,9 +141,9 @@ const cleanData = (rawData) => {
     casesDaily.push(caseIncrease);
     casesTotal.push(totalPositives);
     casesAverage.push(totalPositives / dayCount);
+    trueCaseTotal = data['positive']
+    trueDeathTotal = data['death']
   }
-  const finalTotalCases = casesTotal[casesTotal.length - 1]
-  const finalTotalDeaths = deathsTotal[deathsTotal.length - 1]
   const finalNewCases = casesDaily[casesDaily.length-1]
   // console.log(dates);
   return {
@@ -152,8 +154,8 @@ const cleanData = (rawData) => {
     casesDaily,
     casesTotal,
     casesAverage,
-    finalTotalCases,
-    finalTotalDeaths,
+    trueCaseTotal,
+    trueDeathTotal,
     finalNewCases
   };
 };
@@ -249,9 +251,9 @@ const plotData = (data, country, graphType,daily) => {
 };
 
 const updateKPIs = (data) => {
-  kpiTotalCases.innerText =  Number(data['finalTotalCases']).toLocaleString('en');
+  kpiTotalCases.innerText =  Number(data['trueCaseTotal']).toLocaleString('en');
   kpiNewCases.innerText =  Number(data['finalNewCases']).toLocaleString('en');
-  kpiTotalDeaths.innerText = Number(data['finalTotalDeaths']).toLocaleString('en');
+  kpiTotalDeaths.innerText = Number(data['trueDeathTotal']).toLocaleString('en');
 
 }
 
@@ -263,7 +265,7 @@ const refresh = () => {
   fetchData(country, graphType,daily);
 };
 
-// fetchData("CA", "cases",false);
+fetchData("CA", "cases",false);
 
 const Toggle = () => {
   refresh();
