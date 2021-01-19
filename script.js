@@ -80,6 +80,11 @@ const dailyToggle = document.getElementById('yes-no');
   let daily = dailyToggle.checked;
 
 
+const kpiNewCases = document.getElementById('kpi-new_cases');
+const kpiTotalCases = document.getElementById('kpi-total_cases');
+const kpiTotalDeaths = document.getElementById('kpi-total_deaths');
+
+console.log(kpiNewCases,kpiTotalCases,kpiTotalDeaths)
 
 const fetchData = async (country, graphType,daily) => {
   console.log("fetching data...");
@@ -90,7 +95,8 @@ const fetchData = async (country, graphType,daily) => {
   const json = await result.json();
   const values = Object.values(json).reverse();
   const data = await cleanData(values);
-  plotData(data, country, graphType,daily);
+  plotData(data, country, graphType, daily);
+  updateKPIs(data);
 };
 
 const cleanData = (rawData) => {
@@ -125,6 +131,7 @@ const cleanData = (rawData) => {
         dayCount += 1;
       }
     }
+
     dates.push(date);
     deathsDaily.push(deathIncrease);
     deathsTotal.push(totalDeaths);
@@ -133,6 +140,9 @@ const cleanData = (rawData) => {
     casesTotal.push(totalPositives);
     casesAverage.push(totalPositives / dayCount);
   }
+  const finalTotalCases = casesTotal[casesTotal.length - 1]
+  const finalTotalDeaths = deathsTotal[deathsTotal.length - 1]
+  const finalNewCases = casesDaily[casesDaily.length-1]
   // console.log(dates);
   return {
     dates,
@@ -142,6 +152,9 @@ const cleanData = (rawData) => {
     casesDaily,
     casesTotal,
     casesAverage,
+    finalTotalCases,
+    finalTotalDeaths,
+    finalNewCases
   };
 };
 
@@ -235,7 +248,12 @@ const plotData = (data, country, graphType,daily) => {
   });
 };
 
+const updateKPIs = (data) => {
+  kpiTotalCases.innerText =  Number(data['finalTotalCases']).toLocaleString('en');
+  kpiNewCases.innerText =  Number(data['finalNewCases']).toLocaleString('en');
+  kpiTotalDeaths.innerText = Number(data['finalTotalDeaths']).toLocaleString('en');
 
+}
 
 
 const refresh = () => {
@@ -245,7 +263,7 @@ const refresh = () => {
   fetchData(country, graphType,daily);
 };
 
-fetchData("CA", "cases",false);
+// fetchData("CA", "cases",false);
 
 const Toggle = () => {
   refresh();
