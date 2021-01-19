@@ -1,7 +1,7 @@
 .graph-options {
   width: max-content;
   margin: 1rem auto 2rem;
-  display: flex;
+  /* display: flex; */
 }
 .graph-options select {
   margin-right: 0.5em;
@@ -12,11 +12,15 @@
 }
 .container {
   width: 90%;
-  max-width: 1150px;
+  max-width: 1550px;
   margin: 0 auto;
 }
 
 h1 {
   text-align: center;
   margin-top: 3rem;
+}
+.graph,
+#graph {
+  width: 50%;
 }

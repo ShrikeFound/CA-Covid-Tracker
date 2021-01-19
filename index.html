@@ -3,10 +3,17 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/foundation-sites@6.6.3/dist/css/foundation.min.css"
-      integrity="sha256-ogmFxjqiTMnZhxCqVmcqTvjfe1Y/ec4WaRj/aQPvn+I=" crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/foundation-sites@6.6.3/dist/js/foundation.min.js"
-      integrity="sha256-pRF3zifJRA9jXGv++b06qwtSqX1byFQOLjqa2PTEb2o=" crossorigin="anonymous"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/foundation-sites@6.6.3/dist/css/foundation.min.css"
+      integrity="sha256-ogmFxjqiTMnZhxCqVmcqTvjfe1Y/ec4WaRj/aQPvn+I="
+      crossorigin="anonymous"
+    />
+    <script
+      src="https://cdn.jsdelivr.net/npm/foundation-sites@6.6.3/dist/js/foundation.min.js"
+      integrity="sha256-pRF3zifJRA9jXGv++b06qwtSqX1byFQOLjqa2PTEb2o="
+      crossorigin="anonymous"
+    ></script>
     <link rel="stylesheet" href="style.css" />
     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
     <title>Covid Tracker</title>
@@ -15,11 +22,36 @@
     <div class="container">
       <h1>Covid State Dashboard</h1>
       <div class="graph-options">
-      <div class="select-container" id="select-container"></div>
-      <button type="button" class="button" onclick="refresh()" id="button">Refresh</button>
+        <div class="select-container" id="select-container">
+          <select name="countrySelect" id="countrySelect"></select>
+          <select name="graphyTypeSelect" id="graphTypeSelect">
+            <option value="cases">Cases</option>
+            <option value="deaths">Deaths</option>
+          </select>
+          <button type="button" class="button" onclick="refresh()" id="button">
+            Refresh
+          </button>
+        </div>
+
+        <p>View Daily Totals?</p>
+        <div class="switch large">
+          <input
+            class="switch-input"
+            id="yes-no"
+            type="checkbox"
+            onchange="Toggle()"
+            name="dailyToggle"
+          />
+          <label class="switch-paddle" for="yes-no">
+            <span class="show-for-sr">View Daily Totals?</span>
+            <span class="switch-active" aria-hidden="true">Yes</span>
+            <span class="switch-inactive" aria-hidden="true">No</span>
+          </label>
+        </div>
       </div>
-      <div id="graph"></div>
     </div>
+    <div id="graph" class="graph" style="width: 100%; min-height: 600px"></div>
+
     <script src="script.js"></script>
   </body>
 </html>
