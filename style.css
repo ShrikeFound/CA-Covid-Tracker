@@ -4,9 +4,12 @@
   /* display: flex; */
 }
 .graph-options select {
-  margin-right: 0.5em;
+  margin-right: 0.6em;
 }
 
+.graph-options p {
+  max-width: 55ch;
+}
 .select-container {
   display: flex;
 }
@@ -23,4 +26,12 @@ h1 {
 .graph,
 #graph {
   width: 50%;
+}
+.toggle-container {
+  display: flex;
+  align-items: center;
+}
+.toggle-container p {
+  margin-right: 0.6rem;
+  margin-left: auto;
 }
