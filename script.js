@@ -218,7 +218,7 @@ const plotData = (data, country, graphType, daily) => {
     deaths: deathGraphData,
   };
   const title = graphType.charAt(0).toUpperCase() + graphType.slice(1);
-  console.log(screen.width > 600);
+  console.log(screen.width > 850);
   layout = {
     title: `COVID ${title} in ${country}`,
     showlegend: showLegend,
