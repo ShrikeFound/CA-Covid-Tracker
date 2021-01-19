@@ -1,159 +1,241 @@
+const parent = document.getElementById("select-container");
+const graph = document.getElementById("graph");
 console.log("working");
 
-
-const fetchData = async () => {
+const fetchData = async (country, graphType) => {
   console.log("fetching data...");
-  const result = await fetch('https://api.covidtracking.com/v1/states/ca/daily.json')
+  console.log(country);
+  const result = await fetch(
+    `https://api.covidtracking.com/v1/states/${country}/daily.json`
+  );
   const json = await result.json();
   const values = Object.values(json).reverse();
   const data = await cleanData(values);
-  plotData(data);
-}
+  plotData(data, country, graphType);
+};
 
 const cleanData = (rawData) => {
   const dates = new Array();
   const deathsDaily = new Array();
   const deathsTotal = new Array();
   const deathsAverage = new Array();
+  const casesDaily = new Array();
+  const casesTotal = new Array();
+  const casesAverage = new Array();
   //going through each line of data
   for (let i = 0; i < rawData.length; i++) {
     const data = rawData[i];
     let dateNum = data["date"].toString().split("");
-    let year = parseInt(dateNum.slice(0, 4).join(""),10)
-    let month = parseInt(dateNum.slice(4, 6).join(""), 10) - 1
-    let day = parseInt(dateNum.slice(6).join(""),10)
-    let date = new Date(year, month, day)
-    console.log(year,month,day,date)
-    dates.push(date)
-    let deathIncrease = data['deathIncrease']
-    deathsDaily.push(deathIncrease);
-    let totalDeaths = deathIncrease 
-    let dayCount = 1
-    for (let j = i - 6; j < i; j++){
+    let year = parseInt(dateNum.slice(0, 4).join(""), 10);
+    let month = parseInt(dateNum.slice(4, 6).join(""), 10) - 1;
+    let day = parseInt(dateNum.slice(6).join(""), 10);
+    let date = new Date(year, month, day);
+    console.log(year, month, day, date);
+
+    let deathIncrease = data["deathIncrease"];
+    let caseIncrease = data["positiveIncrease"];
+    console.log([date, caseIncrease]);
+    let totalDeaths = deathIncrease;
+    let totalPositives = data["positiveIncrease"];
+    let dayCount = 1;
+    //cases
+
+    for (let j = i - 6; j < i; j++) {
       if (j >= 0) {
-        totalDeaths += deathsDaily[j]
-        dayCount += 1
+        totalDeaths += deathsDaily[j];
+        totalPositives += casesDaily[j];
+        dayCount += 1;
       }
     }
+    dates.push(date);
+    deathsDaily.push(deathIncrease);
     deathsTotal.push(totalDeaths);
     deathsAverage.push(Math.floor(totalDeaths / dayCount));
+    casesDaily.push(caseIncrease);
+    casesTotal.push(totalPositives);
+    casesAverage.push(totalPositives / dayCount);
   }
   // console.log(dates);
   return {
-    dates,deathsDaily,deathsTotal,deathsAverage
-  }
-}
+    dates,
+    deathsDaily,
+    deathsTotal,
+    deathsAverage,
+    casesDaily,
+    casesTotal,
+    casesAverage,
+  };
+};
 
-const plotData = (data) => {
-  console.log(data)
+const plotData = (data, country, graphType) => {
+  console.log(data);
   const dailyDeathsPlot = {
     x: data["dates"],
     y: data["deathsDaily"],
     marker: {
-      color: "#003f5c"
+      color: "#003f5c",
     },
     name: "Daily Deaths",
-    type: 'bar'
-  }
+    type: "bar",
+  };
   const averageDeathsPlot = {
     x: data["dates"],
     y: data["deathsAverage"],
     marker: {
-      color: "#ff6361"
+      color: "#ff6361",
     },
     name: "Moving Average (7 Days)",
-    type: 'line'
-  }
-  graphData = [dailyDeathsPlot, averageDeathsPlot]
+    type: "line",
+  };
+
+  const dailyCasesPlot = {
+    x: data["dates"],
+    y: data["casesDaily"],
+    marker: {
+      color: "#003f5c",
+    },
+    name: "Daily Cases",
+    type: "bar",
+  };
+  const averageCasesPlot = {
+    x: data["dates"],
+    y: data["casesAverage"],
+    marker: {
+      color: "#ff6361",
+    },
+    name: "Moving Average (7 Days)",
+    type: "line",
+  };
+
+  deathGraphData = [dailyDeathsPlot, averageDeathsPlot];
+  caseGraphData = [dailyCasesPlot, averageCasesPlot];
+  console.log(graphType);
+  graphData = {
+    cases: [dailyCasesPlot, averageCasesPlot],
+    deaths: [dailyDeathsPlot, averageDeathsPlot],
+  };
+  const title = graphType.charAt(0).toUpperCase() + graphType.slice(1);
+
   layout = {
-    title: "COVID Deaths in California",
+    title: `COVID ${title} in ${country}`,
     xaxis: {
       autorange: true,
       rangeselector: {
         buttons: [
           {
             count: 1,
-            label: '1 Month',
-            step: 'month',
-            stepmode: 'backward'
+            label: "1 Month",
+            step: "month",
+            stepmode: "backward",
           },
           {
             count: 6,
-            label: '6 months',
-            step: 'month',
-            stepmode: 'backward'
+            label: "6 months",
+            step: "month",
+            stepmode: "backward",
           },
           {
-            step: 'all'
-          }
-        ]
-      }
-    }
-  }
-  Plotly.newPlot(graph, graphData, layout, {displayModeBar: false,responsive: true})
+            step: "all",
+          },
+        ],
+      },
+    },
+  };
+  Plotly.newPlot(graph, graphData[graphType], layout, {
+    displayModeBar: false,
+    responsive: true,
+  });
+};
+
+const array = [
+  ["ALABAMA", "AL"],
+  ["ALASKA", "AK"],
+  ["AMERICAN SAMOA", "AS"],
+  ["ARIZONA", "AZ"],
+  ["ARKANSAS", "AR"],
+  ["CALIFORNIA", "CA"],
+  ["COLORADO", "CO"],
+  ["CONNECTICUT", "CT"],
+  ["DELAWARE", "DE"],
+  ["DISTRICT OF COLUMBIA", "DC"],
+  ["FLORIDA", "FL"],
+  ["GEORGIA", "GA"],
+  ["GUAM", "GU"],
+  ["HAWAII", "HI"],
+  ["IDAHO", "ID"],
+  ["ILLINOIS", "IL"],
+  ["INDIANA", "IN"],
+  ["IOWA", "IA"],
+  ["KANSAS", "KS"],
+  ["KENTUCKY", "KY"],
+  ["LOUISIANA", "LA"],
+  ["MAINE", "ME"],
+  ["MARYLAND", "MD"],
+  ["MASSACHUSETTS", "MA"],
+  ["MICHIGAN", "MI"],
+  ["MINNESOTA", "MN"],
+  ["MISSISSIPPI", "MS"],
+  ["MISSOURI", "MO"],
+  ["MONTANA", "MT"],
+  ["NEBRASKA", "NE"],
+  ["NEVADA", "NV"],
+  ["NEW HAMPSHIRE", "NH"],
+  ["NEW JERSEY", "NJ"],
+  ["NEW MEXICO", "NM"],
+  ["NEW YORK", "NY"],
+  ["NORTH CAROLINA", "NC"],
+  ["NORTH DAKOTA", "ND"],
+  ["NORTHERN MARIANA IS", "MP"],
+  ["OHIO", "OH"],
+  ["OKLAHOMA", "OK"],
+  ["OREGON", "OR"],
+  ["PENNSYLVANIA", "PA"],
+  ["PUERTO RICO", "PR"],
+  ["RHODE ISLAND", "RI"],
+  ["SOUTH CAROLINA", "SC"],
+  ["SOUTH DAKOTA", "SD"],
+  ["TENNESSEE", "TN"],
+  ["TEXAS", "TX"],
+  ["UTAH", "UT"],
+  ["VERMONT", "VT"],
+  ["VIRGINIA", "VA"],
+  ["VIRGIN ISLANDS", "VI"],
+  ["WASHINGTON", "WA"],
+  ["WEST VIRGINIA", "WV"],
+  ["WISCONSIN", "WI"],
+  ["WYOMING", "WY"],
+];
+
+//country selector
+let selectList = document.createElement("select");
+selectList.id = "mySelect";
+parent.appendChild(selectList);
+
+for (let i = 0; i < array.length; i++) {
+  let option = document.createElement("option");
+  option.text = array[i][0];
+  option.value = array[i][1];
+  selectList.appendChild(option);
 }
 
-// const cleanData = (json) => {  
-//   dates = new Array();
-//   dailyDeaths = new Array();
-//   averageDeaths = new Array();
-  
-//   for (const line in json) {
-//     const data = json[line]
-//     let dateNum = data["date"].toString().split("");
-//     let year = parseInt(dateNum.slice(0, 4).join(""))
-//     let month = parseInt(dateNum.slice(4, 6).join(""))
-//     let day = parseInt(dateNum.slice(6).join(""))
-//     let date = new Date(year,month,day)
-//     dates.push(date)
-//     dailyDeaths.push(data["deathIncrease"]);
-//   }
-//   let trace1 = {
-//     x: dates,
-//     y: dailyDeaths,
-//     name: 'daily deaths',
-//     type: 'bar'
-//   }
-//   let trace2 = {
-//     x: dates,
-//     y: averageDeaths,
-//     name: "total deaths",
-//     type: 'line'
-//   }
-//   data = [trace1,trace2]
-//   return data
-// }
+let graphTypeSelect = document.createElement("select");
+graphTypeSelect.id = "graphSelect";
+parent.appendChild(graphTypeSelect);
 
-// const plotGraph = (data) => {
-//   Plotly.newPlot(TESTER, data,{ margin: {t: 0}})
-// }
+let caseType = document.createElement("option");
+caseType.text = "Cases";
+caseType.value = "cases";
+graphTypeSelect.append(caseType);
 
+let deathType = document.createElement("option");
+deathType.text = "Deaths";
+deathType.value = "deaths";
+graphTypeSelect.append(deathType);
 
+const refresh = () => {
+  let country = selectList.value;
+  let graphType = graphTypeSelect.value;
+  fetchData(country, graphType);
+};
 
-
-
-
-graph = document.getElementById('graph');
-fetchData();
-
-
-
-
-
-
-
-
-const sample = {
-  "date": 20210117, "state": "CA", "positive": 2942475,
-    "probableCases": null, "negative": 35286140, "pending": null,
-    "totalTestResultsSource": "totalTestsViral", "totalTestResults": 38228615,
-    "hospitalizedCurrently": 21143, "hospitalizedCumulative": null, "inIcuCurrently": 4820, "inIcuCumulative": null,
-    "onVentilatorCurrently": null, "onVentilatorCumulative": null, "recovered": null, "dataQualityGrade": "B", "lastUpdateEt": "1/17/2021 02:59",
-    "dateModified": "2021-01-17T02:59:00Z", "checkTimeEt": "01/16 21:59", "death": 33392, "hospitalized": null, "dateChecked": "2021-01-17T02:59:00Z",
-    "totalTestsViral": 38228615, "positiveTestsViral": null, "negativeTestsViral": null, "positiveCasesViral": 2942475, "deathConfirmed": null, "deathProbable": null,
-    "totalTestEncountersViral": null, "totalTestsPeopleViral": null, "totalTestsAntibody": null, "positiveTestsAntibody": null, "negativeTestsAntibody": null, "totalTestsPeopleAntibody": null,
-    "positiveTestsPeopleAntibody": null, "negativeTestsPeopleAntibody": null, "totalTestsPeopleAntigen": null, "positiveTestsPeopleAntigen": null, "totalTestsAntigen": null, "positiveTestsAntigen": null,
-    "fips": "06", "positiveIncrease": 42229, "negativeIncrease": 384131, "total": 38228615, "totalTestResultsIncrease": 426360, "posNeg": 38228615, "deathIncrease": 432,
-    "hospitalizedIncrease": 0, "hash": "ddcb6ef73ec2f71509678afb75d4237bbf2db6fa", "commercialScore": 0, "negativeRegularScore": 0, "negativeScore": 0, "positiveScore": 0,
-      "score": 0, "grade": ""
-}
+fetchData("CA", "cases");
