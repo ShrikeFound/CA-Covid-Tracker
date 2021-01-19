@@ -163,6 +163,7 @@ const plotData = (data, country, graphType,daily) => {
     },
     name: "Moving Average (7 Days)",
     type: "line",
+    showlegend: true
   };
 
   const dailyCasesPlot = {
@@ -182,6 +183,7 @@ const plotData = (data, country, graphType,daily) => {
     },
     name: "Moving Average (7 Days)",
     type: "line",
+    showlegend: true
   };
 
   let deathGraphData;
@@ -229,6 +231,7 @@ const plotData = (data, country, graphType,daily) => {
   Plotly.newPlot(graph, graphData[graphType], layout, {
     displayModeBar: false,
     responsive: true,
+    showlegend: true
   });
 };
 
