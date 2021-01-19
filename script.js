@@ -242,7 +242,7 @@ const refresh = () => {
   fetchData(country, graphType,daily);
 };
 
-// fetchData("CA", "cases",false);
+fetchData("CA", "cases",false);
 
 const Toggle = () => {
   refresh();
